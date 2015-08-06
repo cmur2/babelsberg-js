@@ -750,10 +750,11 @@ Object.subclass('EmptyECJIT', {
 });
 Object.subclass('ECJITTests', {
     benchAll: function() {
-        var names = ['clAddSim', 'dbAddSim', 'clDragSim', 'clDrag2DSim', 'clDrag2DSimFastX', 'clDrag2DSimChangeHalf', 'clDrag2DSimChangeTenth'],
+        var names = ['clAddSim', 'dbAddSim', 'clDragSim', 'clDrag2DSim', 'clDrag2DSimFastX', 'clDrag2DSimChangeHalf', 'clDrag2DSimChangeTenth', 'clDrag2DSimFreqChange5'],
             scenarios = [
                 {iter: 5}, {iter: 100} //, {iter: 500}
             ],
+            executionRuns = 3;
             createEmptyECJIT = function() { return new EmptyECJIT() },
             createECJITs = [
                 function() { return new ClassicECJIT() },
@@ -766,7 +767,7 @@ Object.subclass('ECJITTests', {
 
         console.log("====== Start benchmark ======");
         console.log("Simulations: " + names.join(", "));
-        console.log("Times in ms (ec / "+createECJITs.map(function(fn) { return fn().name }).join(" / ")+" / no-jit):");
+        console.log("Times in ms (ec | "+createECJITs.map(function(fn) { return fn().name }).join(" | ")+" / no-jit):");
 
         names.forEach(function (name) {
             scenarios.forEach(function (scenario) {
@@ -779,18 +780,19 @@ Object.subclass('ECJITTests', {
                 var t0 = this.bench(name, scenario.iter, createEmptyECJIT());
                 var t1s = [];
                 createECJITs.forEach(function (fn) {
-                    var t1 = this.bench(name, scenario.iter, fn());
-                    t1 += this.bench(name, scenario.iter, fn());
-                    t1 += this.bench(name, scenario.iter, fn());
-                    t1 = Math.round(t1/3);
-                    t1s.push(t1);
+                    var t1 = 0;
+                    for (var i = 0; i < executionRuns; i++) {
+                        t1 += this.bench(name, scenario.iter, fn());
+                    }
+                    t1s.push(Math.round(t1/executionRuns));
                 }, this);
-                var t2 = this.bench(name+"Edit", scenario.iter, createEmptyECJIT());
-                t2 += this.bench(name+"Edit", scenario.iter, createEmptyECJIT());
-                t2 += this.bench(name+"Edit", scenario.iter, createEmptyECJIT());
-                t2 = Math.round(t2/3);
+                var t2 = 0;
+                for (var i = 0; i < executionRuns; i++) {
+                    t2 += this.bench(name+"Edit", scenario.iter, createEmptyECJIT());
+                }
+                t2 = Math.round(t2/executionRuns);
 
-                var output = pad(name+"("+scenario.iter+"):", 30)+" "+padl(t2,4)+" / ";
+                var output = pad(name+"("+scenario.iter+"):", 30)+" "+padl(t2,4)+" | ";
                 output += t1s.map(function (t1) {
                     var speedupMsg = "";
                     if(t1 < t2) {
@@ -801,8 +803,8 @@ Object.subclass('ECJITTests', {
                         speedupMsg = " ("+padl(Math.round((t1-t2)/(t0-t2)*100),2)+"%)";
                     }
                     return padl(t1,4)+pad(speedupMsg,6);
-                }, this).join(" / ");
-                output += " / "+padl(t0,4);
+                }, this).join(" | ");
+                output += " | "+padl(t0,4);
 
                 console.log(output);
             }.bind(this));
