@@ -577,7 +577,7 @@ AbstractECJIT.subclass('MultiplicativeAdaptiveECJIT', {
 
     initialize: function() {
         this.actionCounterMax = 64;
-        this.actionCounterMin = 4;
+        this.actionCounterMin = 2;
         this.currentActionLimit = this.actionCounterMin;
         this.countDecayDecrement = 10;
         this.clearState();
