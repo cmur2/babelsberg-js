@@ -8,7 +8,7 @@ contentLoaded(window, function() {
 
     var canvas = new fabric.Canvas('c', { selection: false, stateful: false });
     window.canvas = canvas;
-    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 
+    fabric.Object.prototype.originX = fabric.Object.prototype.originY =
         'center';
 
     function makeCircle(left, top) {
@@ -141,22 +141,22 @@ contentLoaded(window, function() {
     // }
     // anim();
 
-    bbb.ecjit = new ClassicECJIT();
-    bbb.ecjit.actionCounterLimit = 25;
-    bbb.ecjit.countDecayDecrement = 1;
-    //bbb.ecjit = new AdditiveAdaptiveECJIT();
-    //bbb.ecjit = new MultiplicativeAdaptiveECJIT();
-    
+    bbb.defaultSolver.ecjit = new ClassicECJIT();
+    bbb.defaultSolver.ecjit.actionCounterLimit = 25;
+    bbb.defaultSolver.ecjit.countDecayDecrement = 1;
+    //bbb.defaultSolver.ecjit = new AdditiveAdaptiveECJIT();
+    //bbb.defaultSolver.ecjit = new MultiplicativeAdaptiveECJIT();
+
     var start = new Date();
     canvas.renderAll();
     var i = 0;
     function anim1() {
         side1.x1 = i;
         if(true) {
-            var old_jit = bbb.ecjit;
-            bbb.ecjit = new EmptyECJIT();
+            var old_jit = bbb.defaultSolver.ecjit;
+            bbb.defaultSolver.ecjit = undefined;
             canvas._objects.each(function (o) { o.set(o); o.setCoords(); });
-            bbb.ecjit = old_jit;
+            bbb.defaultSolver.ecjit = old_jit;
         } else {
             canvas._objects.each(function (o) { o.set(o); o.setCoords(); });
         }

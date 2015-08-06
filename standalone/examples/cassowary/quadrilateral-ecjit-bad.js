@@ -8,7 +8,7 @@ contentLoaded(window, function() {
 
     var canvas = new fabric.Canvas('c', { selection: false, stateful: false });
     window.canvas = canvas;
-    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 
+    fabric.Object.prototype.originX = fabric.Object.prototype.originY =
         'center';
 
     function makeCircle(left, top) {
@@ -141,13 +141,13 @@ contentLoaded(window, function() {
     // }
     // anim();
 
-    bbb.ecjit = new ClassicECJIT();
-    bbb.ecjit.actionCounterLimit = 25;
-    bbb.ecjit.countDecayDecrement = 10;
-    //bbb.ecjit = new AdditiveAdaptiveECJIT();
-    //bbb.ecjit = new MultiplicativeAdaptiveECJIT();
-    //bbb.ecjit = new LastECJIT();
-    
+    bbb.defaultSolver.ecjit = new ClassicECJIT();
+    bbb.defaultSolver.ecjit.actionCounterLimit = 25;
+    bbb.defaultSolver.ecjit.countDecayDecrement = 10;
+    //bbb.defaultSolver.ecjit = new AdditiveAdaptiveECJIT();
+    //bbb.defaultSolver.ecjit = new MultiplicativeAdaptiveECJIT();
+    //bbb.defaultSolver.ecjit = new LastECJIT();
+
     canvas.renderAll();
     var i = 0;
     var iInc = 10;

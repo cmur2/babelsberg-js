@@ -381,22 +381,19 @@ Object.subclass('ECJITTests', {
     },
 
     bench: function(name, iterations, ecjit) {
-        var fn = this[name],
-            old_ecjit = bbb.ecjit;
-
-        bbb.ecjit = ecjit;
+        var fn = this[name];
 
         var start = new Date();
-        fn.bind(this)(iterations);
+        fn.bind(this)(iterations, ecjit);
         var end = new Date();
 
-        bbb.ecjit = old_ecjit;
         return end-start;
     },
 
-    dbAddSim: function (iterations) {
+    dbAddSim: function (iterations, ecjit) {
         var o = {x: 0, y: 0, z: 0},
             solver = new DBPlanner();
+        solver.ecjit = ecjit;
 
         bbb.always({solver: solver, ctx: {o: o}}, function () {
             return o.x == o.z - o.y &&
@@ -410,9 +407,10 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    dbAddSimEdit: function (iterations) {
+    dbAddSimEdit: function (iterations, ecjit) {
         var o = {x: 0, y: 0, z: 0},
             solver = new DBPlanner();
+        solver.ecjit = ecjit;
 
         bbb.always({solver: solver, ctx: {o: o}}, function () {
             return o.x == o.z - o.y &&
@@ -428,9 +426,10 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clAddSim: function (iterations) {
+    clAddSim: function (iterations, ecjit) {
         var o = {x: 0, y: 0, z: 0},
             solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: {o: o}}, function () { return o.x + o.y == o.z; });
@@ -441,9 +440,10 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    clAddSimEdit: function (iterations) {
+    clAddSimEdit: function (iterations, ecjit) {
         var o = {x: 0, y: 0, z: 0},
             solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: {o: o}}, function () { return o.x + o.y == o.z; });
@@ -456,7 +456,7 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clDragSim: function(numIterations) {
+    clDragSim: function(numIterations, ecjit) {
         var ctx = {
                 mouse: {location_y: 0},
                 mercury: {top: 0, bottom: 0},
@@ -466,6 +466,7 @@ Object.subclass('ECJITTests', {
                 white: {top: 0, bottom: 0},
                 display: {number: 0}},
             solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return temperature.c == mercury.top });
@@ -484,7 +485,7 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    clDragSimEdit: function(numIterations) {
+    clDragSimEdit: function(numIterations, ecjit) {
         var ctx = {
                 mouse: {location_y: 0},
                 mercury: {top: 0, bottom: 0},
@@ -494,6 +495,7 @@ Object.subclass('ECJITTests', {
                 white: {top: 0, bottom: 0},
                 display: {number: 0}},
             solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return temperature.c == mercury.top });
@@ -514,7 +516,7 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clDrag2DSimParam: function(numIterations, sheer) {
+    clDrag2DSimParam: function(numIterations, ecjit, sheer) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -522,6 +524,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -543,7 +546,7 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    clDrag2DSimEditParam: function(numIterations, sheer) {
+    clDrag2DSimEditParam: function(numIterations, ecjit, sheer) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -551,6 +554,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -569,23 +573,23 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clDrag2DSim: function(numIterations) {
-        this.clDrag2DSimParam(numIterations, 1);
+    clDrag2DSim: function(numIterations, ecjit) {
+        this.clDrag2DSimParam(numIterations, ecjit, 1);
     },
 
-    clDrag2DSimEdit: function(numIterations) {
-        this.clDrag2DSimEditParam(numIterations, 1);
+    clDrag2DSimEdit: function(numIterations, ecjit) {
+        this.clDrag2DSimEditParam(numIterations, ecjit, 1);
     },
 
-    clDrag2DSimFastX: function(numIterations) {
-        this.clDrag2DSimParam(numIterations, 3);
+    clDrag2DSimFastX: function(numIterations, ecjit) {
+        this.clDrag2DSimParam(numIterations, ecjit, 3);
     },
 
-    clDrag2DSimFastXEdit: function(numIterations) {
-        this.clDrag2DSimEditParam(numIterations, 3);
+    clDrag2DSimFastXEdit: function(numIterations, ecjit) {
+        this.clDrag2DSimEditParam(numIterations, ecjit, 3);
     },
 
-    clDrag2DSimChangeParam: function(numIterations, numSwitch) {
+    clDrag2DSimChangeParam: function(numIterations, ecjit, numSwitch) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -593,6 +597,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -614,7 +619,7 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    clDrag2DSimChangeEditParam: function(numIterations, numSwitch) {
+    clDrag2DSimChangeEditParam: function(numIterations, ecjit, numSwitch) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -622,6 +627,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -649,23 +655,23 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clDrag2DSimChangeHalf: function(numIterations) {
-        this.clDrag2DSimChangeParam(numIterations, numIterations/2);
+    clDrag2DSimChangeHalf: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeParam(numIterations, ecjit, numIterations/2);
     },
 
-    clDrag2DSimChangeHalfEdit: function(numIterations) {
-        this.clDrag2DSimChangeEditParam(numIterations, numIterations/2);
+    clDrag2DSimChangeHalfEdit: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeEditParam(numIterations, ecjit, numIterations/2);
     },
 
-    clDrag2DSimChangeTenth: function(numIterations) {
-        this.clDrag2DSimChangeParam(numIterations, numIterations/10);
+    clDrag2DSimChangeTenth: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeParam(numIterations, ecjit, numIterations/10);
     },
 
-    clDrag2DSimChangeTenthEdit: function(numIterations) {
-        this.clDrag2DSimChangeEditParam(numIterations, numIterations/10);
+    clDrag2DSimChangeTenthEdit: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeEditParam(numIterations, ecjit, numIterations/10);
     },
 
-    clDrag2DSimFreqChangeParam: function(numIterations, switchFreq) {
+    clDrag2DSimFreqChangeParam: function(numIterations, ecjit, switchFreq) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -673,6 +679,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -693,7 +700,7 @@ Object.subclass('ECJITTests', {
         }
     },
 
-    clDrag2DSimFreqChangeEditParam: function(numIterations, switchFreq) {
+    clDrag2DSimFreqChangeEditParam: function(numIterations, ecjit, switchFreq) {
         var ctx = {
             mouse: {x: 100, y: 100},
             wnd: {w: 100, h: 100},
@@ -701,6 +708,7 @@ Object.subclass('ECJITTests', {
             comp2: {w: 30, display: 0}
         };
         var solver = new ClSimplexSolver();
+        solver.ecjit = ecjit;
         solver.setAutosolve(false);
 
         bbb.always({solver: solver, ctx: ctx}, function () { return wnd.w == mouse.x });
@@ -723,12 +731,12 @@ Object.subclass('ECJITTests', {
         cb();
     },
 
-    clDrag2DSimFreqChange5: function(numIterations) {
-        this.clDrag2DSimChangeParam(numIterations, 5);
+    clDrag2DSimFreqChange5: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeParam(numIterations, ecjit, 5);
     },
 
-    clDrag2DSimFreqChange5Edit: function(numIterations) {
-        this.clDrag2DSimChangeEditParam(numIterations, 5);
+    clDrag2DSimFreqChange5Edit: function(numIterations, ecjit) {
+        this.clDrag2DSimChangeEditParam(numIterations, ecjit, 5);
     }
 });
 

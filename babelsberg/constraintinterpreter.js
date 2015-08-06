@@ -20,7 +20,6 @@ Object.subclass('Babelsberg', {
     initialize: function() {
         this.defaultSolvers = [];
         this.callbacks = [];
-        this.ecjit = new EmptyECJIT();
     },
 
     isConstraintObject: true,
@@ -752,7 +751,7 @@ Object.subclass('ConstrainedVariable', {
             ConstrainedVariable.$$optionalSetters =
                 ConstrainedVariable.$$optionalSetters || [];
 
-            if(source && bbb.ecjit.suggestValueHook(this, value)) {
+            if(source && solver.ecjit !== undefined && solver.ecjit.suggestValueHook(this, value)) {
                 return value;
             }
 

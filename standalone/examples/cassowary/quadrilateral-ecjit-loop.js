@@ -8,7 +8,7 @@ contentLoaded(window, function() {
 
     var canvas = new fabric.Canvas('c', { selection: false, stateful: false });
     window.canvas = canvas;
-    fabric.Object.prototype.originX = fabric.Object.prototype.originY = 
+    fabric.Object.prototype.originX = fabric.Object.prototype.originY =
         'center';
 
     function makeCircle(left, top) {
@@ -141,13 +141,13 @@ contentLoaded(window, function() {
     // }
     // anim();
 
-    bbb.ecjit = new ClassicECJIT();
-    bbb.ecjit.actionCounterLimit = 2;
-    bbb.ecjit.countDecayDecrement = 20;
-    //bbb.ecjit.actionCounterLimit = 10;
-    //bbb.ecjit = new AdditiveAdaptiveECJIT();
-    //bbb.ecjit = new MultiplicativeAdaptiveECJIT();
-    
+    bbb.defaultSolver.ecjit = new ClassicECJIT();
+    bbb.defaultSolver.ecjit.actionCounterLimit = 2;
+    bbb.defaultSolver.ecjit.countDecayDecrement = 20;
+    //bbb.defaultSolver.ecjit.actionCounterLimit = 10;
+    //bbb.defaultSolver.ecjit = new AdditiveAdaptiveECJIT();
+    //bbb.defaultSolver.ecjit = new MultiplicativeAdaptiveECJIT();
+
     canvas.renderAll();
     var i = 5;
     var j = 5;
@@ -166,10 +166,10 @@ contentLoaded(window, function() {
         }
         //console.log(i+" "+j+" "+iInc+" "+jInc)
         if(true) {
-            var old_jit = bbb.ecjit;
-            bbb.ecjit = new EmptyECJIT();
+            var old_jit = bbb.defaultSolver.ecjit;
+            bbb.defaultSolver.ecjit = new EmptyECJIT();
             canvas._objects.each(function (o) { o.set(o); o.setCoords(); });
-            bbb.ecjit = old_jit;
+            bbb.defaultSolver.ecjit = old_jit;
         } else {
             canvas._objects.each(function (o) { o.set(o); o.setCoords(); });
         }
